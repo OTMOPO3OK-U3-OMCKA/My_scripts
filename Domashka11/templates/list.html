@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<h1>Все кандидаты</h1>
+{% for id_, item in name_cand.items() %}
+<p><a href="/candidate/{{ id_ }}">{{ item }}</a></p>
+{% endfor %}
+
+{% endblock %}

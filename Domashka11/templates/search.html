@@ -1,0 +1,11 @@
+
+{% extends 'base.html' %}
+
+{% block body %}
+
+<h1>найдено кандидатов {{ count }}</h2>
+{% for i in list_candidates %}
+<p><a href="/candidate/{{ i['id'] }}">{{ i['name'] }}</a></p>
+{% endfor %}
+
+{% endblock %}
