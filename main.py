@@ -1,31 +1,34 @@
-from flask import Flask
-from classes import candidates_list, Candidates
-candidates = candidates_list('candidates.json')
-our_cand = Candidates(candidates)
+from flask import Flask, request
 
 app = Flask(__name__)
+# Ограничиваем размер файла здесь
+app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024
 
-@app.route("/")
-def get_pre():
-    st = """Имя кандидата - name
-Позиция кандидата - position
-Навыки через запятую - skills
-"""
-    ls =[]
-    for i in our_cand.candidates:
-        st1 = st.replace('name', i['name'])
-        st1 = st1.replace('position', i['position'])
-        st1 = st1.replace('skills', i['skills'])
-        ls.append('<pre>'+st1+'</pre>')
-    return ''.join(ls)
 
-@app.route("/candidates/<x>")
-def get_candidates(x):
-    return our_cand.id_candidate(x)
+@app.route('/')
+def page_form():
+    """ Эта вьюшка показывает форму, которая отправляет файлы"""
+    form_content = """
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="picture">
+        <input type="submit" value="Отправить">
+    </form>
+    """
+    return form_content
 
-@app.route("/skills/<x>")
-def get_skills(x):
-    return our_cand.name_list_with_skills(x)
+
+@app.route('/upload', methods=['POST'])
+def page_upload():
+    """ Эта вьюшка обрабатывает форму"""
+
+    # Получаем объект картинки из формы
+    picture = request.files.get("picture")
+
+    # Получаем имя файла у загруженного фала
+    filename = picture.filename
+
+    # Сохраняем картинку под родным именем в папку uploads
+    picture.save(f"./uploads/{filename}")
+    return f"Загружен и сохранен файл"
 
 app.run()
-
