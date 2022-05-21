@@ -13,11 +13,7 @@ bp = Blueprint('bp', __name__)
 @bp.route("/")
 def page_index():
     return render_template('index.html')
-"""
-@app.route("/list")
-def page_tag():
-    pass
-"""
+
 
 @bp.route("/post_form")
 def page_post_form():
@@ -30,11 +26,11 @@ def page_post_upload():
     try:
         jf = JsonF(POST_PATH)
     except FileNotFoundError:
-        my_logg.warning("no server")
+        my_logg.warning("no file-json")
         return "зайдите на сайт в другой раз"
-    except:
-        my_logg.warning("global except")
-        return "автор так и не понял как работает JSONDecodeError потому что торопился"
+    except JSONDecodeError:
+        my_logg.warning("the content of the file does not match")
+        return 'содержание файла не соответствует морально-нравственным устоям компьютрной религии'
     listik = jf.filter_reverse(reg)
     return render_template('post_list.html', reg=reg, listik=listik)
 
@@ -55,10 +51,12 @@ def static_dir():
                     jf.add_element(element)
                     f = jf.opener()
                     f.reverse()
-                    ff = []
-                except:
+                except FileNotFoundError:
                     my_logg.warning("not json-file")
-                    return "json не грузится"
+                    return "нет доступа к базе, зайдите в другой раз"
+                except JSONDecodeError:
+                    my_logg.warning("the content of the file does not match")
+                    return 'нет доступа к базе, зайдите в другой раз'
                 else:
                     return render_template("post_uploaded.html", f=f)
             return "не введен текст"
