@@ -2,18 +2,17 @@ import json
 class JsonF:
     def __init__(self, file):
         self.file = file
-        self.oper = self.opener()
+        self.oper = self.load_data()
 
 
-    def opener(self):
+    def load_data(self):
         with open(self.file, 'r', encoding='utf-8') as file:
-            file = json.load(file)
-        return file
+            return json.load(file)
 
 
     def filter_reverse(self, text):
         list_select = []
-        file = self.opener()
+        file = self.load_data()
         for i in file:
             if text.lower() in i["content"].lower():
                 list_select.append(i)
@@ -22,7 +21,7 @@ class JsonF:
 
 
     def add_element(self, element):
-        file_list = self.opener()
+        file_list = self.load_data()
         if file_list[-1] != element:
             file_list.append(element)
 

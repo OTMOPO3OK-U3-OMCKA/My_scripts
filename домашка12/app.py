@@ -8,4 +8,5 @@ UPLOAD_FOLDER = "uploads/images"
 app = Flask(__name__)
 
 app.register_blueprint(bp)
-app.run()
+if __name__ == '__main__':
+   app.run()

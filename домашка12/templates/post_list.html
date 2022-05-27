@@ -12,17 +12,8 @@
 
     <h1>Посты по запросу {{ reg }}</h1>
 	{% for elem in listik %}
-	{% if 'http' in elem['pic'] %}
-
-<img src={{ elem['pic'] }} width='350' height='350'/>
+	<img src="{% if 'http' in elem['pic'] %}{{ elem['pic'] }}{% else %}/static/images/{{ elem['pic'] }}{% endif %}" width='350' height='350'>
 <p>{{ elem['content'] }}</p>
-
-	{% else %}
-
- <img src="/static/images/{{ elem['pic'] }}" width='350' height='350'>
-<p>{{ elem['content'] }}</p>
-
-	{% endif %}
 	{% endfor %}
 
     <a href="post_form" class="button">Добавить пост</a>

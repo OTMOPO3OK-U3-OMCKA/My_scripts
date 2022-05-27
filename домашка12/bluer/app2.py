@@ -21,35 +21,37 @@ def page_post_form():
 
 
 @bp.route("/search", methods=['GET'])
-def page_post_upload():
+def page_post_search():
     reg = request.args.get('s')
     try:
-        jf = JsonF(POST_PATH)
+        jsonf = JsonF(POST_PATH)
     except FileNotFoundError:
         my_logg.warning("no file-json")
         return "зайдите на сайт в другой раз"
     except JSONDecodeError:
         my_logg.warning("the content of the file does not match")
         return 'содержание файла не соответствует морально-нравственным устоям компьютрной религии'
-    listik = jf.filter_reverse(reg)
+    listik = jsonf.filter_reverse(reg)
     return render_template('post_list.html', reg=reg, listik=listik)
 
 
 @bp.route("/uploads", methods=['POST'])
 def static_dir():
     try:
-        formats = [".png", ".jpg", "jpeg"]
+        formats = ["png", "jpg", "jpeg"]
         picture = request.files.get('picture')
         filename = picture.filename
-        element = {"pic": filename,
+        picture_type = filename.split(".")[-1]
+        element = {"pic": picture.filename,
                    "content": request.form.get('content')}
-        if filename[-4::].lower() in formats:
+        my_logg.info('ddd')
+        if picture_type in formats:
             if bool(element["content"]):
                 try:
                     picture.save(f'./static/images/{filename}')
-                    jf = JsonF(POST_PATH)
-                    jf.add_element(element)
-                    f = jf.opener()
+                    jsonf = JsonF(POST_PATH)
+                    jsonf.add_element(element)
+                    f = jsonf.load_data()
                     f.reverse()
                 except FileNotFoundError:
                     my_logg.warning("not json-file")
@@ -66,3 +68,9 @@ def static_dir():
         return "вообще не знаю чё произошло"
     finally:
         my_logg.warning("there was an attempt to publish a post")
+
+'''
+@bp.route("/uploads/<path:path>")
+def static_dir2(path):
+    return send_from_directory("static/images", path)
+'''
